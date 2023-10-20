@@ -1,6 +1,6 @@
 //
 //  Extension.swift
-//  
+//
 //
 //  Created by Karthikeyan Ramasamy on 27/06/23.
 //
@@ -31,11 +31,16 @@ extension MTAWSLogManager {
 }
 
 // MARK: - Enumerations
+public protocol MTLoggingTagProtocol: RawRepresentable, Codable where RawValue == String { }
+
+public protocol MTLogModuleProtocol: RawRepresentable, Codable where RawValue == String { }
+
+public protocol MTLogPhaseProtocol: RawRepresentable, Codable where RawValue == String { }
 
 extension MTLogManager {
     
     /// We provide a tag to save along with the log to identify the log based on tag, if we need more tag we can extend the MTLogManager and update the custom tag whatever we need
-    enum MTLoggingTag: String, Codable {
+    enum MTLoggingTag: String, MTLoggingTagProtocol {
         case error = "ERROR"
         case warning = "WARNING"
         case info = "INFO"
@@ -43,14 +48,14 @@ extension MTLogManager {
     }
 
     /// We provide a module to save along with the log to identify the log based on module we work, if we need more module we can extend the MTLogManager and update the custom tag whatever we need, we just provide a a sample here
-    enum MTLogModule: String, Codable {
+    enum MTLogModule: String, MTLogModuleProtocol {
         case general = "General"
         case downloadSync = "Download_Sync"
         case uploadSync = "Upload_Sync"
     }
 
     /// We provide a phase to save along with the log to identify the log based on kind of phase we work, if we need more phase we can extend the MTLogManager and update the custom phase whatever we need, we just provide a a sample here
-    enum MTLogPhase: String, Codable {
+    enum MTLogPhase: String, MTLogPhaseProtocol {
         case phase1 = "PHASE_1"
         case phase2 = "PHASE_2"
         case general = "GENERAL"

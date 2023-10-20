@@ -56,7 +56,7 @@ open class MTLogManager {
     
     // MARK: - Logging Methods
     
-    func postLog(tag: MTLoggingTag, phase: MTLogPhase, module: MTLogModule, message: String) {
+    func postLog(tag: some MTLoggingTagProtocol, phase: some MTLogPhaseProtocol, module: some MTLogModuleProtocol, message: String) {
         // To make sure that no newLine(\n) is entered in message
         let newMessage = message.replacingOccurrences(of: "\n", with: "-")
         saveLogEvent(tag: tag, phase: phase, module: module, message: newMessage) {
@@ -151,7 +151,7 @@ open class MTLogManager {
     }
     
     // Adding Log Details
-    private func saveLogEvent(tag: MTLoggingTag, phase: MTLogPhase, module: MTLogModule, message: String, onCompletion: @escaping () -> Void) {
+    private func saveLogEvent(tag: some MTLoggingTagProtocol, phase: some MTLogPhaseProtocol, module: some MTLogModuleProtocol, message: String, onCompletion: @escaping () -> Void) {
         let logMessage = getLogMessage(tag: tag, phase: phase, module: module, message: message)
         eventMessage = logMessage
         if #available(iOS 15, *) {
@@ -196,7 +196,7 @@ open class MTLogManager {
     }
     
     // Get Log Message
-    private func getLogMessage(tag: MTLoggingTag, phase: MTLogPhase, module: MTLogModule, message: String) -> String {
+    private func getLogMessage(tag: some MTLoggingTagProtocol, phase: some MTLogPhaseProtocol, module: some MTLogModuleProtocol, message: String) -> String {
         let details = [
             String(describing: UIDevice.current.identifierForVendor ?? UUID(uuidString: "")),
             tag.rawValue,
@@ -235,10 +235,10 @@ open class MTLogManager {
             let notificationStatus = settings.authorizationStatus
             message.append(" | Notification: \(notificationStatus)")
         }
-        self.postLog(tag: .info, phase: .general, module: .general, message: message)
+        self.postLog(tag: MTLoggingTag.info, phase: MTLogPhase.general, module: MTLogModule.general, message: message)
     }
     
-    func captureError(_ error: Error?, tag: MTLoggingTag, phase: MTLogPhase, module: MTLogModule) {
+    func captureError(_ error: Error?, tag: some MTLoggingTagProtocol, phase: some MTLogPhaseProtocol, module: some MTLogModuleProtocol) {
         if let error = error {
             var message = "🌐 API Error: "
             message += error.localizedDescription
@@ -247,7 +247,7 @@ open class MTLogManager {
     }
     
     func logout() {
-        let logMessage = getLogMessage(tag: .info, phase: .general, module: .general, message: "👋🏻 logging out")
+        let logMessage = getLogMessage(tag: MTLoggingTag.info, phase: MTLogPhase.general, module: MTLogModule.general, message: "👋🏻 logging out")
         eventMessage = logMessage
         if #available(iOS 15, *) {
             eventTimeStamp = Date.now.timeIntervalSince1970
